@@ -34,7 +34,6 @@ final class Terminator
 			register_shutdown_function([self::class, 'shutdownHandler']);
 			self::$hasShutdown = false;
 		}
-		// Debugger::log(new \RuntimeException('aa'));
 		// 2. User can reserve additional memory for custom handler
 		if ($reservedMemoryKB > 0) {
 			self::$reserved .= str_repeat('t', $reservedMemoryKB * 1000);
