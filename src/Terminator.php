@@ -53,9 +53,7 @@ final class Terminator
 		self::$hasShutdown = true;
 		usort(
 			self::$handlers,
-			static function (RegisteredHandler $a, RegisteredHandler $b): int {
-				return $a->getPriority() > $b->getPriority() ? 1 : -1;
-			}
+			static fn(RegisteredHandler $a, RegisteredHandler $b): int => $a->getPriority() > $b->getPriority() ? 1 : -1,
 		);
 		foreach (self::$handlers as $handlerInfo) {
 			try {
@@ -72,9 +70,9 @@ final class Terminator
 						new TerminatorShutdownHandlerException(
 							'An error occurred while processing the shutdown function: ' . $e->getMessage(),
 							$e->getCode(),
-							$e
+							$e,
 						),
-						ILogger::EXCEPTION
+						ILogger::EXCEPTION,
 					);
 				}
 			}
