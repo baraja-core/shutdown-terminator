@@ -9,7 +9,7 @@ final class RegisteredHandler
 {
 	public function __construct(
 		private TerminatorHandler $handler,
-		private int $priority
+		private int $priority,
 	) {
 		if ($this->priority < 0) {
 			$this->priority = 0;
