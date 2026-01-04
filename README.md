@@ -16,56 +16,56 @@ A lightweight PHP library for registering and executing handlers at the end of s
 The package consists of four main components working together:
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                         Terminator                              │
-│  (Static orchestrator managing handler lifecycle)               │
-│                                                                 │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │  Reserved Memory Buffer (100KB + custom allocations)    │   │
-│  └─────────────────────────────────────────────────────────┘   │
-│                                                                 │
-│  ┌─────────────────────────────────────────────────────────┐   │
-│  │  Handler Registry: array<RegisteredHandler>             │   │
-│  │                                                         │   │
-│  │   ┌──────────────────┐  ┌──────────────────┐           │   │
-│  │   │ RegisteredHandler│  │ RegisteredHandler│  ...      │   │
-│  │   │ - handler        │  │ - handler        │           │   │
-│  │   │ - priority: 1    │  │ - priority: 5    │           │   │
-│  │   └────────┬─────────┘  └────────┬─────────┘           │   │
-│  │            │                     │                      │   │
-│  │            ▼                     ▼                      │   │
-│  │   ┌──────────────────┐  ┌──────────────────┐           │   │
-│  │   │TerminatorHandler │  │TerminatorHandler │           │   │
-│  │   │  (interface)     │  │  (interface)     │           │   │
-│  │   └──────────────────┘  └──────────────────┘           │   │
-│  └─────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────┘
++-------------------------------------------------------------------+
+|                           Terminator                              |
+|         (Static orchestrator managing handler lifecycle)          |
+|                                                                   |
+|  +-------------------------------------------------------------+  |
+|  |      Reserved Memory Buffer (100KB + custom allocations)    |  |
+|  +-------------------------------------------------------------+  |
+|                                                                   |
+|  +-------------------------------------------------------------+  |
+|  |  Handler Registry: array<RegisteredHandler>                 |  |
+|  |                                                             |  |
+|  |  +--------------------+    +--------------------+           |  |
+|  |  | RegisteredHandler  |    | RegisteredHandler  |   ...     |  |
+|  |  | - handler          |    | - handler          |           |  |
+|  |  | - priority: 1      |    | - priority: 5      |           |  |
+|  |  +---------+----------+    +---------+----------+           |  |
+|  |            |                         |                      |  |
+|  |            v                         v                      |  |
+|  |  +--------------------+    +--------------------+           |  |
+|  |  | TerminatorHandler  |    | TerminatorHandler  |           |  |
+|  |  |    (interface)     |    |    (interface)     |           |  |
+|  |  +--------------------+    +--------------------+           |  |
+|  +-------------------------------------------------------------+  |
++-------------------------------------------------------------------+
 
-                         Shutdown Sequence
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │ PHP Script Ends     │
-                    │ (exit/die/natural)  │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │ shutdownHandler()   │
-                    │ called by PHP       │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │ Sort handlers by    │
-                    │ priority (ASC)      │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │ Execute each handler│
-                    │ with error trapping │
-                    └─────────────────────┘
+                        Shutdown Sequence
+                               |
+                               v
+                  +----------------------+
+                  |   PHP Script Ends    |
+                  |  (exit/die/natural)  |
+                  +-----------+----------+
+                              |
+                              v
+                  +----------------------+
+                  |  shutdownHandler()   |
+                  |    called by PHP     |
+                  +-----------+----------+
+                              |
+                              v
+                  +----------------------+
+                  |  Sort handlers by    |
+                  |    priority (ASC)    |
+                  +-----------+----------+
+                              |
+                              v
+                  +----------------------+
+                  | Execute each handler |
+                  |  with error trapping |
+                  +----------------------+
 ```
 
 ### :gear: Component Overview
